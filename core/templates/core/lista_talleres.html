@@ -1,0 +1,6 @@
+{% extends 'core/base.html' %}
+{% block title %}Talleres{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between"><h2>📅 Talleres</h2>{% if user.is_superuser %}<a href="{% url 'crear_taller' %}" class="btn btn-success">+ Nuevo Taller</a>{% endif %}</div>
+<div class="row">{% for taller in talleres %}<div class="col-md-4 mb-3"><div class="card"><div class="card-body"><h5>{{ taller.nombre }}</h5><p>{{ taller.descripcion|truncatewords:10 }}</p><p><strong>Fecha:</strong> {{ taller.fecha|date:"d/m/Y H:i" }}</p><p><strong>Instructor:</strong> {{ taller.instructor }}</p><p><strong>Cupos:</strong> {{ taller.cupos_disponibles }}/{{ taller.cupos }}</p>{% if user.is_authenticated %}<a href="{% url 'inscribirse_taller' taller.id %}" class="btn btn-success btn-sm">Inscribirse</a>{% endif %}{% if user.is_superuser %}<div class="mt-2"><a href="{% url 'editar_taller' taller.id %}" class="btn btn-warning btn-sm">✏️</a> <a href="{% url 'eliminar_taller' taller.id %}" class="btn btn-danger btn-sm">🗑️</a></div>{% endif %}</div></div></div>{% empty %}<p>No hay talleres.</p>{% endfor %}</div>
+{% endblock %}

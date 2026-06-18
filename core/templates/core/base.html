@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSpace - {% block title %}Inicio{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { background-color: #2c3e50; }
+        .navbar-brand, .nav-link { color: #ecf0f1 !important; }
+        .footer { background-color: #2c3e50; color: white; padding: 20px 0; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">🎨 ArtSpace</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'lista_obras' %}">Obras</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'lista_talleres' %}">Talleres</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'mis_inscripciones' %}">Mis Inscripciones</a></li>
+                        {% if user.is_superuser %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'auditoria' %}">📋 Auditoría</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'crear_taller' %}">+ Taller</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'crear_obra' %}">+ Obra</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><span class="nav-link">👋 {{ user.username }}</span></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'registro' %}">Registrarse</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+    <footer class="footer"><div class="container text-center">ArtSpace - Gestión de Talleres y Exhibiciones &copy; 2026</div></footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

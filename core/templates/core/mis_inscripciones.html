@@ -1,0 +1,7 @@
+{% extends 'core/base.html' %}
+{% block title %}Mis Inscripciones{% endblock %}
+{% block content %}
+<h2>📋 Mis Inscripciones</h2>
+<div class="row">{% for inscripcion in inscripciones %}<div class="col-md-6 mb-3"><div class="card"><div class="card-body"><h5>{{ inscripcion.taller.nombre }}</h5><p><strong>Fecha:</strong> {{ inscripcion.taller.fecha|date:"d/m/Y H:i" }}</p><p><strong>Instructor:</strong> {{ inscripcion.taller.instructor }}</p><p><strong>Estado:</strong> {% if inscripcion.confirmado %}✅ Confirmado{% else %}⏳ Pendiente{% endif %}</p></div></div></div>{% empty %}<p>No estás inscrito en ningún taller.</p>{% endfor %}</div>
+<a href="{% url 'lista_talleres' %}" class="btn btn-primary">Ver todos los talleres</a>
+{% endblock %}

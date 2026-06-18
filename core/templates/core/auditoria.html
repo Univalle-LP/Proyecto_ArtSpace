@@ -1,0 +1,6 @@
+{% extends 'core/base.html' %}
+{% block title %}Auditoría{% endblock %}
+{% block content %}
+<h2>📋 Registro de Auditoría</h2>
+<table class="table table-striped"><thead><tr><th>Usuario</th><th>Acción</th><th>Tabla</th><th>Descripción</th><th>Fecha/Hora</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.usuario.username }}</td><td><span class="badge bg-{% if log.accion == 'LOGIN' %}success{% elif log.accion == 'LOGOUT' %}secondary{% elif log.accion == 'CREATE' %}primary{% elif log.accion == 'UPDATE' %}warning{% elif log.accion == 'DELETE' %}danger{% else %}info{% endif %}">{{ log.get_accion_display }}</span></td><td>{{ log.tabla_afectada|default:"-" }}</td><td>{{ log.descripcion|default:"-" }}</td><td>{{ log.fecha_hora|date:"d/m/Y H:i:s" }}</td></tr>{% empty %}<tr><td colspan="5">Sin registros.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

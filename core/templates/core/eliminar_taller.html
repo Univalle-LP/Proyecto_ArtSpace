@@ -1,0 +1,5 @@
+{% extends 'core/base.html' %}
+{% block title %}Eliminar Taller{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6"><div class="card border-danger"><div class="card-header bg-danger text-white"><h3>⚠️ Confirmar</h3></div><div class="card-body"><p>¿Eliminar taller <strong>"{{ taller.nombre }}"</strong>?</p><form method="post">{% csrf_token %}<button type="submit" class="btn btn-danger">Sí, eliminar</button> <a href="{% url 'lista_talleres' %}" class="btn btn-secondary">Cancelar</a></form></div></div></div></div>
+{% endblock %}

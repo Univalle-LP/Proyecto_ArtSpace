@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+<div class="text-center mb-4"><h1>🎨 Bienvenido a ArtSpace</h1></div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>🖼️ Últimas Obras</h3>
+        {% for obra in obras %}
+            <div class="card mb-2"><div class="card-body"><h5>{{ obra.titulo }}</h5><p>{{ obra.tecnica }} - ${{ obra.precio }}</p></div></div>
+        {% empty %}<p>No hay obras.</p>{% endfor %}
+        <a href="{% url 'lista_obras' %}" class="btn btn-primary">Ver todas</a>
+    </div>
+    <div class="col-md-6">
+        <h3>📅 Próximos Talleres</h3>
+        {% for taller in talleres %}
+            <div class="card mb-2"><div class="card-body"><h5>{{ taller.nombre }}</h5><p>{{ taller.fecha|date:"d/m/Y H:i" }} - {{ taller.cupos_disponibles }} cupos</p><a href="{% url 'inscribirse_taller' taller.id %}" class="btn btn-sm btn-success">Inscribirse</a></div></div>
+        {% empty %}<p>No hay talleres.</p>{% endfor %}
+        <a href="{% url 'lista_talleres' %}" class="btn btn-primary">Ver todos</a>
+    </div>
+</div>
+{% endblock %}
