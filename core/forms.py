@@ -4,13 +4,18 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import ObraArte, Taller
 
 class RegistroForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(required=True, label="Correo electrónico")
+    first_name = forms.CharField(max_length=30, required=True, label="Nombre")
+    last_name = forms.CharField(max_length=30, required=True, label="Apellido")
 
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        labels = {
+            'username': 'Nombre de usuario',
+            'password1': 'Contraseña',
+            'password2': 'Confirmar contraseña',
+        }
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -19,8 +24,8 @@ class RegistroForm(UserCreationForm):
         return email
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(max_length=100)
-    password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(max_length=100, label="Usuario")
+    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
 
 class ObraForm(forms.ModelForm):
     class Meta:

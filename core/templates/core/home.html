@@ -1,21 +1,102 @@
 {% extends 'core/base.html' %}
 {% block title %}Inicio{% endblock %}
+
 {% block content %}
-<div class="text-center mb-4"><h1>🎨 Bienvenido a ArtSpace</h1></div>
+<!-- HERO -->
+<div class="row align-items-center mb-5 pb-3">
+    <div class="col-lg-8 mx-auto text-center">
+        <h1 class="display-heading display-4 mb-3">Donde el arte <br class="d-none d-md-block">encuentra su espacio</h1>
+        <p class="lead text-muted-soft" style="max-width: 600px; margin: 0 auto;">
+            Descubre obras únicas y participa en talleres creativos. 
+            Conecta con artistas y expande tu visión.
+        </p>
+        {% if not user.is_authenticated %}
+            <div class="mt-4">
+                <a href="{% url 'registro' %}" class="btn-primary-custom me-2">Únete gratis</a>
+                <a href="{% url 'login' %}" class="btn-outline-custom">Iniciar sesión</a>
+            </div>
+        {% else %}
+            <div class="mt-4">
+                <a href="{% url 'lista_obras' %}" class="btn-primary-custom">Explorar galería</a>
+                <a href="{% url 'lista_talleres' %}" class="btn-outline-custom ms-2">Ver talleres</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- SECCIÓN: OBRAS DESTACADAS -->
+<div class="row mb-5">
+    <div class="col-12 d-flex justify-content-between align-items-end mb-4">
+        <h2 class="display-heading h2">🖼️ Obras recientes</h2>
+        <a href="{% url 'lista_obras' %}" class="text-decoration-none text-dark border-bottom border-dark pb-1">Ver todas →</a>
+    </div>
+
+    {% if obras %}
+        <div class="row g-4">
+            {% for obra in obras %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card-art">
+                        {% if obra.imagen %}
+                            <img src="{{ obra.imagen.url }}" class="card-img-top" alt="{{ obra.titulo }}">
+                        {% else %}
+                            <div class="card-img-top d-flex align-items-center justify-content-center" style="background: #eae7e2; color: #aaa; font-size: 3rem;">
+                                <i class="fas fa-image"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ obra.titulo }}</h5>
+                            <p class="card-subtitle">{{ obra.get_tecnica_display }} · <span class="fw-bold">${{ obra.precio }}</span></p>
+                            <p class="card-text small">{{ obra.descripcion|truncatewords:12 }}</p>
+                        </div>
+                        <div class="card-footer-actions">
+                            <small class="text-muted"><i class="far fa-user"></i> {{ obra.artista.username }}</small>
+                            <a href="{% url 'lista_obras' %}" class="btn btn-sm btn-outline-dark rounded-pill px-3">Ver</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted-soft">Todavía no hay obras. <a href="{% url 'crear_obra' %}">Sé el primero en publicar</a>.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- SECCIÓN: TALLERES PRÓXIMOS -->
 <div class="row">
-    <div class="col-md-6">
-        <h3>🖼️ Últimas Obras</h3>
-        {% for obra in obras %}
-            <div class="card mb-2"><div class="card-body"><h5>{{ obra.titulo }}</h5><p>{{ obra.tecnica }} - ${{ obra.precio }}</p></div></div>
-        {% empty %}<p>No hay obras.</p>{% endfor %}
-        <a href="{% url 'lista_obras' %}" class="btn btn-primary">Ver todas</a>
+    <div class="col-12 d-flex justify-content-between align-items-end mb-4">
+        <h2 class="display-heading h2">📅 Próximos talleres</h2>
+        <a href="{% url 'lista_talleres' %}" class="text-decoration-none text-dark border-bottom border-dark pb-1">Ver todos →</a>
     </div>
-    <div class="col-md-6">
-        <h3>📅 Próximos Talleres</h3>
-        {% for taller in talleres %}
-            <div class="card mb-2"><div class="card-body"><h5>{{ taller.nombre }}</h5><p>{{ taller.fecha|date:"d/m/Y H:i" }} - {{ taller.cupos_disponibles }} cupos</p><a href="{% url 'inscribirse_taller' taller.id %}" class="btn btn-sm btn-success">Inscribirse</a></div></div>
-        {% empty %}<p>No hay talleres.</p>{% endfor %}
-        <a href="{% url 'lista_talleres' %}" class="btn btn-primary">Ver todos</a>
-    </div>
+
+    {% if talleres %}
+        <div class="row g-4">
+            {% for taller in talleres %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card-art">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ taller.nombre }}</h5>
+                            <p class="card-text small">{{ taller.descripcion|truncatewords:12 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                                    <i class="far fa-calendar-alt"></i> {{ taller.fecha|date:"d M" }}
+                                </span>
+                                <span class="text-muted small">{{ taller.cupos_disponibles }} cupos</span>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                <span><strong>${{ taller.precio }}</strong></span>
+                                <a href="{% url 'inscribirse_taller' taller.id %}" class="btn btn-sm btn-dark rounded-pill px-3">Inscribirse</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted-soft">No hay talleres programados. Vuelve pronto.</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

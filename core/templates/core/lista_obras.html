@@ -1,10 +1,45 @@
 {% extends 'core/base.html' %}
-{% block title %}Obras{% endblock %}
+{% block title %}Explorar Obras{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between"><h2>🖼️ Obras</h2>{% if user.is_authenticated %}<a href="{% url 'crear_obra' %}" class="btn btn-success">+ Nueva</a>{% endif %}</div>
-<div class="row">{% for obra in obras %}<div class="col-md-4 mb-3"><div class="card"><div class="card-body"><h5>{{ obra.titulo }}</h5><p>{{ obra.descripcion|truncatewords:10 }}</p><p>${{ obra.precio }}</p>{% if obra.imagen %}
-    <img src="{{ obra.imagen.url }}" alt="{{ obra.titulo }}" style="max-width: 100%; height: auto; max-height: 150px;">
-{% else %}
-    <p><em>Sin imagen</em></p>
-{% endif %}{% if user == obra.artista or user.is_superuser %}<a href="{% url 'editar_obra' obra.id %}" class="btn btn-sm btn-warning">✏️</a> <a href="{% url 'eliminar_obra' obra.id %}" class="btn btn-sm btn-danger">🗑️</a>{% endif %}</div></div></div>{% empty %}<p>No hay obras.</p>{% endfor %}</div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="display-heading h2">Explorar obras</h2>
+    {% if user.is_authenticated %}
+        <a href="{% url 'crear_obra' %}" class="btn-primary-custom"><i class="fas fa-plus"></i> Nueva obra</a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for obra in obras %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card-art">
+                {% if obra.imagen %}
+                    <img src="{{ obra.imagen.url }}" class="card-img-top" alt="{{ obra.titulo }}">
+                {% else %}
+                    <div class="card-img-top d-flex align-items-center justify-content-center" style="background: #eae7e2; height: 240px; color: #aaa; font-size: 3rem;">
+                        <i class="fas fa-image"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ obra.titulo }}</h5>
+                    <p class="card-subtitle">{{ obra.get_tecnica_display }} · <span class="fw-bold">${{ obra.precio }}</span></p>
+                    <p class="card-text small">{{ obra.descripcion|truncatewords:15 }}</p>
+                </div>
+                <div class="card-footer-actions">
+                    <span class="small text-muted"><i class="far fa-user"></i> {{ obra.artista.username }}</span>
+                    <div>
+                        {% if user == obra.artista or user.is_superuser %}
+                            <a href="{% url 'editar_obra' obra.id %}" class="btn btn-sm btn-outline-secondary rounded-circle"><i class="fas fa-pen"></i></a>
+                            <a href="{% url 'eliminar_obra' obra.id %}" class="btn btn-sm btn-outline-danger rounded-circle"><i class="fas fa-trash-alt"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted-soft">No hay obras registradas. <a href="{% url 'crear_obra' %}">Crea la primera</a>.</p>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}
